@@ -6,13 +6,13 @@ const icons = {
   spool: <><circle cx="36" cy="35" r="25" /><circle cx="36" cy="35" r="17" /><circle cx="36" cy="35" r="5" /><path d="M36 60v7h18M54 55h18v19H54zM61 60v9M66 60v9" /></>,
 }
 
-export default function ProcessStage({ stage, number, enabled }) {
+export default function ProcessStage({ stage, number, operation }) {
   return (
-    <li className={`process-stage ${enabled ? 'stage-enabled' : ''}`}>
+    <li className={`process-stage ${operation.active ? 'stage-enabled' : ''}`}>
       <div className="stage-art" aria-hidden="true"><svg viewBox="0 0 80 80">{icons[stage.icon]}</svg></div>
       <span className="stage-number">{String(number).padStart(2, '0')}</span>
       <h3>{stage.name}</h3><p>{stage.detail}</p>
-      <span className="stage-state">{stage.enabledKey ? (enabled ? 'ON' : 'OFF') : 'Simulated'}</span>
+      <span className="stage-state">{operation.label}</span>
     </li>
   )
 }
