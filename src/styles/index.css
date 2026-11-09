@@ -133,3 +133,17 @@ input[type="range"] { width: 100%; accent-color: #225f4c; height: 5px; cursor: p
   .process-stage p { grid-column: 2; padding: 0; line-height: 1.6; }
   .stage-state { grid-column: 3; grid-row: 1 / 4; margin-top: 25px; }
 }
+
+.simulation-controls { margin-bottom: 24px; padding: 18px; border: 1px solid #dce3e0; background: #fff; border-radius: 8px; }
+.simulation-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.simulation-actions button { border-radius: 6px; padding: 10px 15px; font-size: 12px; font-weight: 600; }
+.simulation-actions .button-primary { flex: 0 1 auto; }
+.simulation-actions button:disabled { opacity: .45; cursor: default; }
+.simulation-clock { color: #65736d; font-size: 11px; margin-left: auto; font-variant-numeric: tabular-nums; }
+.simulation-message { color: #52665a; font-size: 11px; line-height: 1.6; margin-top: 12px; }
+.sample-dot { fill: #3c876e; }
+.chart-empty { fill: #65736d; font-size: 12px; }
+.stage-enabled .stage-art { animation: operating-pulse 1.5s ease-in-out infinite alternate; }
+@keyframes operating-pulse { from { opacity: .65; } to { opacity: 1; } }
+@media (max-width: 550px) { .simulation-clock { width: 100%; margin: 4px 0 0; } }
+@media (prefers-reduced-motion: reduce) { .stage-enabled .stage-art { animation: none; } }

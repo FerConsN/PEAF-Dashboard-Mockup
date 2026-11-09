@@ -2,15 +2,14 @@ import Panel from './Panel.jsx'
 import DeviceControl from './DeviceControl.jsx'
 import { deviceControls } from '../simulation/systemDefinition.js'
 
-export default function MachineControls({ settings, onSettingChange, onReset }) {
+export default function MachineControls({ settings, onSettingChange }) {
   return (
-    <Panel id="controls-title" eyebrow="Operator station" title="Machine controls" badge="Local demo">
-      <p className="control-intro">Independent demo controls for the AlFrEDo system.</p>
+    <Panel id="controls-title" eyebrow="Operator station" title="Machine controls" badge="Simulated">
+      <p className="control-intro">Set devices and speeds, then start the simulation.</p>
       <div className="device-controls">
         {deviceControls.map((device) => <DeviceControl key={device.id} device={device} settings={settings} onSettingChange={onSettingChange} />)}
       </div>
-      <div className="control-actions"><button type="button" className="button-secondary" onClick={onReset}>Reset controls</button></div>
-      <p className="help-text">ON/OFF affects demo state only. Setpoints can be prepared while OFF. Simulated readings stay fixed.</p>
+      <p className="help-text">Setpoints can be prepared while OFF or paused. Device states affect only the artificial simulation.</p>
     </Panel>
   )
 }

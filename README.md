@@ -1,4 +1,4 @@
-# PEAF Dashboard Mockup
+# PEAF Dashboard Mockup · v0.3
 
 A simple dashboard for the AlFrEDo fiber extrusion system, based on MIT FrED, built with React, Vite, JavaScript (JSX), and standard CSS. The Vite project lives directly in this repository root.
 
@@ -46,9 +46,26 @@ Each device has an independent local ON/OFF toggle:
 | Fan | ON/OFF only | — |
 | DC spool motor | Nominal RPM setting, not a measured speed | 0–100 |
 
-All devices start OFF. Setpoints may be prepared while OFF. Reset turns every device OFF and restores extruder speed 30, temperature 185 °C, and nominal spool speed 30 RPM. These are interface defaults, not validated operating parameters.
+All devices start OFF. Setpoints may be prepared while idle or paused. They are interface settings, not validated operating parameters.
 
-Sensor cards show **fixed simulated** hot-end temperature and camera diameter values. The diameter chart is an illustrative simulated camera trace; its 1.75 mm reference is not a verified system specification. The readings do not respond to setpoints or device ON/OFF states. There is no pressure measurement, physical model, live camera feed, hardware communication, backend, database, or required environment variable.
+## Interactive simulation
+
+1. Turn the heater and extruder ON; optionally turn on the fan and DC spool motor.
+2. Select **Start simulation**. The hot-end temperature progressively approaches the chosen setpoint.
+3. At the **artificial 100 °C demo threshold**, extrusion begins and generates a diameter sample every 0.5 simulation seconds. This threshold is not a confirmed AlFrEDo operating temperature.
+4. Change the controls while running to explore the generated behavior. **Pause simulation** freezes time, readings, and history; **Resume simulation** continues the same session.
+5. **Reset simulation** stops the engine, clears the chart and elapsed time, turns all devices OFF, and restores defaults: 25 °C initial temperature, 1.75 mm illustrative initial diameter, extruder speed 30, heater setpoint 185 °C, and nominal spool setting 30 RPM.
+
+### Artificial behavior, not physics
+
+- Higher extruder speed increases simulated diameter; higher spool speed reduces it. A stopped or disabled spool removes take-up influence and collection, but extrusion can continue.
+- Heater ON progressively approaches its setpoint, including lower setpoints. Heater OFF stops extrusion and cools toward an artificial ambient value of 25 °C. Extruder OFF stops new diameter samples. A temperature below the demo threshold also stops sampling.
+- Fan ON reduces generated diameter variation and speeds artificial cooling when the heater is OFF.
+- Diameter transitions are smoothed with a small deterministic oscillation. The relationships, limits, and temperature threshold are arbitrary demonstration rules with no physical equations or calibration.
+- The chart retains the **last 100 actual simulation samples**, timestamped in simulation seconds; it starts empty and auto-scales its diameter axis. During an extrusion interruption, the last diameter and trace are held, while temperature and time continue if the simulation is running. Stopped periods produce no new diameter samples.
+- The process diagram highlights operating components and distinguishes ready, waiting, paused, and OFF states. The simulated camera stage samples only during extrusion; no browser camera access is requested.
+
+All temperature and diameter readings are **simulated**. The **1.75 mm value is only an illustrative initial value, not a confirmed AlFrEDo target**. There are no pressure or additional machine measurements, physical models, hardware connections, camera permissions, backend, database, or required environment variables. State is kept in memory and resets on page reload. Each browser timer tick advances 0.5 simulated seconds; browser throttling can make simulated time slower than wall-clock time.
 
 ## Project structure
 
@@ -59,15 +76,24 @@ src/
   App.jsx
   main.jsx
   components/   # Dashboard sections and shared panel
-  simulation/   # System definitions, local control state, and fixed sample data
+  simulation/   # Pure engine/reducer, React clock hook, and device definitions
   styles/       # Standard CSS and responsive layout
   assets/       # Local SVG mark
 ```
 
 ## Validation
 
-Run `npm run build` to validate the production bundle. For a manual smoke check, start the dev server, toggle each device independently, adjust the three sliders through their full ranges, and reset. Confirm all devices return to OFF and default setpoints are restored. Readings should remain fixed and labeled as simulated. Check the layout on desktop and mobile. No automated test suite is configured yet.
+```sh
+npm test
+npm run build
+```
 
-## Next development phase
+The Node test suite checks temperature progression, artificial control relationships, device gating, pause/resume/reset, timestamped history limits, and bounded settings. For a browser smoke check, start the dev server, enable devices and start the simulation, wait for warm-up, then adjust the sliders. Check that Pause freezes values, Resume continues, and Reset clears history and turns devices OFF. Check desktop and mobile layouts.
 
-`simulation/systemDefinition.js` describes the devices and ordered process stages. `simulation/useMachineControls.js` owns local control state independently of presentation. `DeviceControl` renders each device's toggle and optional setpoint, while `ProcessStage` renders each stage with its associated demo state. Future animation and simulation consumers can use these settings without embedding physical models in the UI components. `placeholderData.js` remains a separate source of illustrative readings.
+## Simulation architecture
+
+- `simulation/engine.js`: deterministic pure state transitions, artificial process relationships, and derived operating states. This is the single source for simulated readings and history.
+- `simulation/useSimulation.js`: React reducer integration and a single 500 ms interval, cleaned up on pause/reset/unmount. Controls dispatch actions to the same reducer, so ticks always use current settings.
+- `simulation/systemDefinition.js`: device ranges, defaults, and ordered process stages.
+- `SimulationControls`, `DeviceControl`, and `ProcessStage`: presentation and user actions. Future animation or camera visualization components can consume the engine's readings and operating states without requesting a real camera or embedding simulation logic in the UI.
+- `DiameterMonitor`: dynamic SVG time-series rendering with no chart dependency.
