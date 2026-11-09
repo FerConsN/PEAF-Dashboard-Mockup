@@ -1,6 +1,6 @@
 # PEAF Dashboard Mockup
 
-A simple fiber extrusion dashboard built with React, Vite, JavaScript (JSX), and standard CSS. The Vite project lives directly in this repository root.
+A simple dashboard for the AlFrEDo fiber extrusion system, based on MIT FrED, built with React, Vite, JavaScript (JSX), and standard CSS. The Vite project lives directly in this repository root.
 
 ## Requirements
 
@@ -27,14 +27,28 @@ npm run preview
 
 The production build is generated in `dist/`. Preview serves that build locally. For repeatable dependency installation with the committed lockfile, use `npm ci`.
 
-## Dashboard
+## AlFrEDo process and controls
 
-- Fiber extrusion schematic: feed, extrusion, cooling, and collection stages.
-- Machine controls: temperature and screw-speed sliders, start/pause, and reset.
-- Sensor readings: fixed example temperature, pressure, and take-up speed.
-- Fiber diameter monitoring: a fixed example trace and nominal diameter.
+The schematic follows the system's five stages:
 
-Start/pause changes the demo status and decorative spool animation. Sliders update local setpoints; reset restores defaults and pauses the demo. Readings and chart samples remain fixed. There are no physical simulation models, live machine connections, backend, database, or required environment variables.
+1. A motorized feed mechanism drives a solid thermoplastic stick.
+2. A hot-end with a heater, temperature sensor, and extrusion nozzle heats and extrudes the material.
+3. A fan cools the extruded fiber.
+4. A simulated camera observes the fiber for diameter measurement.
+5. A DC motor drives a take-up spool to collect the fiber.
+
+Each device has an independent local ON/OFF toggle:
+
+| Device | Setting | Range |
+| --- | --- | --- |
+| Extruder / stick-feed mechanism | Speed, units unspecified | 10–100 |
+| Heater | Temperature setpoint | 0–300 °C |
+| Fan | ON/OFF only | — |
+| DC spool motor | Nominal RPM setting, not a measured speed | 0–100 |
+
+All devices start OFF. Setpoints may be prepared while OFF. Reset turns every device OFF and restores extruder speed 30, temperature 185 °C, and nominal spool speed 30 RPM. These are interface defaults, not validated operating parameters.
+
+Sensor cards show **fixed simulated** hot-end temperature and camera diameter values. The diameter chart is an illustrative simulated camera trace; its 1.75 mm reference is not a verified system specification. The readings do not respond to setpoints or device ON/OFF states. There is no pressure measurement, physical model, live camera feed, hardware communication, backend, database, or required environment variable.
 
 ## Project structure
 
@@ -45,11 +59,15 @@ src/
   App.jsx
   main.jsx
   components/   # Dashboard sections and shared panel
-  simulation/   # Fixed placeholder data and default setpoints
+  simulation/   # System definitions, local control state, and fixed sample data
   styles/       # Standard CSS and responsive layout
   assets/       # Local SVG mark
 ```
 
 ## Validation
 
-Run `npm run build` to validate the production bundle. For a manual smoke check, start the dev server, open the dashboard, adjust both sliders, start/pause the demo, and reset. Confirm that reset restores 185 °C and 30 rpm and that the layout works on desktop and mobile. No automated test suite is configured yet.
+Run `npm run build` to validate the production bundle. For a manual smoke check, start the dev server, toggle each device independently, adjust the three sliders through their full ranges, and reset. Confirm all devices return to OFF and default setpoints are restored. Readings should remain fixed and labeled as simulated. Check the layout on desktop and mobile. No automated test suite is configured yet.
+
+## Next development phase
+
+`simulation/systemDefinition.js` describes the devices and ordered process stages. `simulation/useMachineControls.js` owns local control state independently of presentation. `DeviceControl` renders each device's toggle and optional setpoint, while `ProcessStage` renders each stage with its associated demo state. Future animation and simulation consumers can use these settings without embedding physical models in the UI components. `placeholderData.js` remains a separate source of illustrative readings.

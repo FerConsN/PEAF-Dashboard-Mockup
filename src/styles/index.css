@@ -31,22 +31,16 @@ h1 { font-size: clamp(26px, 3vw, 36px); font-weight: 600; letter-spacing: -1.4px
 .demo-banner { display: flex; align-items: center; gap: 14px; padding: 15px 18px; border: 1px solid #dce5de; border-radius: 8px; background: #edf2ed; margin-bottom: 26px; font-size: 12px; color: #526655; }
 .demo-label { font-size: 9px; font-weight: 750; letter-spacing: 1px; color: #42604b; }
 .version-label { margin-left: auto; font-size: 11px; }
-.dashboard-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 24px; align-items: stretch; }
+.dashboard-grid { display: grid; grid-template-areas: "process controls" "sensors controls" "diameter controls"; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 24px; align-items: stretch; }
 .panel { padding: 26px; border: 1px solid #e0e6e3; border-radius: 12px; background: #fff; min-width: 0; }
 .panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 24px; }
 .panel-heading .eyebrow { font-size: 9px; margin-bottom: 7px; }
 h2 { font-size: 18px; font-weight: 600; letter-spacing: -.4px; }
 .tag { font-size: 10px; color: #65736d; border: 1px solid #e4e9e6; padding: 5px 8px; border-radius: 5px; white-space: nowrap; }
-.process-track { display: grid; grid-template-columns: repeat(4, 1fr); position: relative; margin: 32px 0 35px; }
+.process-track { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); position: relative; margin: 28px 0; padding: 0; list-style: none; }
 .process-track::before { content: ''; position: absolute; left: 12%; right: 12%; top: 51px; height: 2px; background: #a6b9ab; }
 .process-stage { text-align: center; position: relative; }
 .stage-art { height: 100px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
-.hopper { width: 53px; height: 57px; background: #e2ebe3; border-top: 4px solid #839c89; clip-path: polygon(0 0, 100% 0, 63% 78%, 63% 100%, 38% 100%, 38% 78%); transform: translateY(-15px); }
-.barrel { width: 83px; height: 39px; border: 2px solid #80998a; border-radius: 6px 14px 14px 6px; background: repeating-linear-gradient(110deg, #e8eee9, #e8eee9 10px, #a5b8aa 11px, #a5b8aa 13px); box-shadow: 0 12px 0 -9px #80998a; }
-.bath { width: 82px; height: 38px; margin-top: 22px; border: 2px solid #8babae; border-top: 0; border-radius: 0 0 6px 6px; background: repeating-linear-gradient(0deg, #e2eff1 0 8px, #bcd4d8 9px 10px); }
-.spool { width: 58px; height: 58px; border: 5px solid #8da48f; border-radius: 50%; background: repeating-radial-gradient(circle, #eaf0e7 0 4px, #adc1a5 5px 6px); box-shadow: 0 0 0 5px #edf1e9; }
-.is-running .spool { animation: wind 4s linear infinite; }
-@keyframes wind { to { transform: rotate(360deg); } }
 .stage-number { font-size: 9px; font-weight: 600; letter-spacing: 1px; color: #65766d; }
 h3 { margin: 7px 0 6px; font-size: 13px; font-weight: 600; }
 .process-stage p { font-size: 10px; color: #65736d; padding: 0 3px; }
@@ -67,7 +61,7 @@ input[type="range"] { width: 100%; accent-color: #225f4c; height: 5px; cursor: p
 .button-secondary { border: 1px solid #dfe5e1; background: #fff; color: #53655b; }
 .button-secondary:hover { background: #f0f4f1; }
 .help-text { font-size: 10px; line-height: 1.6; color: #65736d; margin-top: 15px; }
-.sensor-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 32px; }
+.sensor-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 32px; }
 .sensor-card { background: #f7f9f7; border: 1px solid #eaf0e9; border-radius: 8px; padding: 18px 14px; }
 .sensor-card > p { font-size: 10px; color: #65736d; }
 .sensor-value { margin: 18px 0; font-size: 29px; font-weight: 550; letter-spacing: -1px; white-space: nowrap; }
@@ -91,13 +85,12 @@ input[type="range"] { width: 100%; accent-color: #225f4c; height: 5px; cursor: p
 .skip-link { position: absolute; left: 10px; top: -100px; padding: 12px; background: white; z-index: 2; }
 .skip-link:focus { top: 10px; }
 @media (max-width: 1000px) {
-  .dashboard-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
+  .dashboard-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "process" "controls" "sensors" "diameter"; gap: 18px; }
   .panel { padding: 20px; }
   .sensor-grid { grid-template-columns: 1fr; margin-top: 20px; }
   .sensor-card { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 16px 12px; }
   .sensor-value { margin: 0; font-size: 23px; }
   .sensor-detail { display: none; }
-  .stage-art { transform: scale(.8); }
   .note-end { margin-left: 12px; }
 }
 @media (max-width: 700px) {
@@ -111,4 +104,32 @@ input[type="range"] { width: 100%; accent-color: #225f4c; height: 5px; cursor: p
   .version-label { display: none; }
   .app-footer { flex-direction: column; gap: 8px; }
 }
-@media (prefers-reduced-motion: reduce) { .is-running .spool { animation: none; } }
+
+/* Independent stage and device states are ready for future animation consumers. */
+.panel:has(#process-title) { grid-area: process; }
+.panel:has(#controls-title) { grid-area: controls; }
+.panel:has(#sensors-title) { grid-area: sensors; }
+.panel:has(#diameter-title) { grid-area: diameter; }
+.stage-art svg { width: 64px; height: 80px; fill: #edf2ed; stroke: #708e7a; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; background: #fff; }
+.stage-enabled .stage-art svg { stroke: #175c49; fill: #dcece1; }
+.stage-state { display: inline-block; margin-top: 12px; padding: 3px 6px; border-radius: 4px; font-size: 9px; color: #65736d; background: #f3f6f3; }
+.stage-enabled .stage-state { background: #e2f0e6; color: #175c49; }
+.device-control { border-top: 1px solid #edf0ed; padding: 20px 0; }
+.device-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.device-heading h3 { font-size: 13px; margin: 0 0 5px; }
+.device-heading p { font-size: 11px; line-height: 1.6; color: #65736d; }
+.device-toggle { display: flex; align-items: center; justify-content: center; gap: 7px; min-width: 76px; min-height: 36px; padding: 8px 10px; border: 1px solid #dce3e0; border-radius: 20px; color: #53655b; background: #fff; font-size: 11px; font-weight: 650; }
+.device-toggle.is-on { color: #175c49; background: #e2f0e6; border-color: #bdd6c5; }
+.device-toggle.is-on .small-dot { background: #288265; }
+.device-control .control-field { margin: 20px 0 0; }
+.setting-hint { font-size: 10px; color: #65736d; margin-top: 9px; }
+@media (max-width: 550px) {
+  .process-track { grid-template-columns: 1fr; gap: 18px; margin: 20px 0; }
+  .process-track::before { width: 2px; height: auto; top: 30px; bottom: 40px; left: 31px; right: auto; }
+  .process-stage { display: grid; grid-template-columns: 64px 1fr auto; column-gap: 12px; text-align: left; align-items: start; }
+  .stage-art { grid-row: 1 / 4; height: 80px; margin: 0; }
+  .stage-number { grid-column: 2; }
+  .process-stage h3 { grid-column: 2; margin: 4px 0; }
+  .process-stage p { grid-column: 2; padding: 0; line-height: 1.6; }
+  .stage-state { grid-column: 3; grid-row: 1 / 4; margin-top: 25px; }
+}

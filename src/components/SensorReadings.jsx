@@ -3,7 +3,7 @@ import { sensorReadings } from '../simulation/placeholderData.js'
 
 export default function SensorReadings() {
   return (
-    <Panel id="sensors-title" eyebrow="Instrumentation" title="Sensor readings" badge="Sample data">
+    <Panel id="sensors-title" eyebrow="Instrumentation" title="Simulated sensor readings" badge="Simulated">
       <div className="sensor-grid">
         {sensorReadings.map((sensor) => (
           <div className="sensor-card" key={sensor.label}>
@@ -13,7 +13,7 @@ export default function SensorReadings() {
           </div>
         ))}
       </div>
-      <p className="help-text">Fixed, simulated readings for layout development.</p>
+      <p className="help-text">Illustrative values only, even when devices are OFF. Not measured or calculated from the setpoints.</p>
     </Panel>
   )
 }
