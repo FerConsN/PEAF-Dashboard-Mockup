@@ -21,10 +21,10 @@ export default function App() {
           <div><p className="eyebrow">AlFrEDo · Fiber extrusion</p><h1>From solid stick to fiber.</h1><p className="page-description">Explore the AlFrEDo system, based on MIT FrED, one stage at a time.</p></div>
           <div className={`status-pill ${state.status === 'running' ? 'active' : ''}`} role="status"><span className="small-dot" />{state.status === 'running' ? 'Simulation running' : state.status === 'paused' ? 'Simulation paused' : 'Simulation ready'}</div>
         </div>
-        <div className="demo-banner"><span className="demo-label">PROTOTYPE</span><p>Interactive AlFrEDo simulation. All measurements are artificial; no hardware or camera connection.</p><span className="version-label">v0.3</span></div>
+        <div className="demo-banner"><span className="demo-label">PROTOTYPE</span><p>Interactive AlFrEDo simulation. All measurements are artificial; no hardware or camera connection.</p><span className="version-label">v0.4</span></div>
         <SimulationControls status={state.status} elapsed={state.elapsed} message={process.message} onStart={start} onPause={pause} onReset={reset} />
         <div className="dashboard-grid">
-          <ProcessVisualization process={process} />
+          <ProcessVisualization state={state} process={process} />
           <MachineControls settings={state.settings} onSettingChange={changeSetting} />
           <SensorReadings temperature={state.temperature} diameter={state.diameter} hasSamples={state.samples.length > 0} extruding={process.extruding} />
           <DiameterMonitor diameter={state.diameter} samples={state.samples} extruding={process.extruding} />

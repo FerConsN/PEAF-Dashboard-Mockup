@@ -37,13 +37,8 @@ h1 { font-size: clamp(26px, 3vw, 36px); font-weight: 600; letter-spacing: -1.4px
 .panel-heading .eyebrow { font-size: 9px; margin-bottom: 7px; }
 h2 { font-size: 18px; font-weight: 600; letter-spacing: -.4px; }
 .tag { font-size: 10px; color: #65736d; border: 1px solid #e4e9e6; padding: 5px 8px; border-radius: 5px; white-space: nowrap; }
-.process-track { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); position: relative; margin: 28px 0; padding: 0; list-style: none; }
-.process-track::before { content: ''; position: absolute; left: 12%; right: 12%; top: 51px; height: 2px; background: #a6b9ab; }
-.process-stage { text-align: center; position: relative; }
-.stage-art { height: 100px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
 .stage-number { font-size: 9px; font-weight: 600; letter-spacing: 1px; color: #65766d; }
 h3 { margin: 7px 0 6px; font-size: 13px; font-weight: 600; }
-.process-stage p { font-size: 10px; color: #65736d; padding: 0 3px; }
 .panel-note { display: flex; align-items: center; gap: 7px; border-top: 1px solid #edf0ed; padding-top: 17px; font-size: 10px; color: #65736d; flex-wrap: wrap; }
 .panel-note .small-dot { width: 5px; height: 5px; background: #83a18a; }
 .note-end { margin-left: auto; }
@@ -110,8 +105,6 @@ input[type="range"] { width: 100%; accent-color: #225f4c; height: 5px; cursor: p
 .panel:has(#controls-title) { grid-area: controls; }
 .panel:has(#sensors-title) { grid-area: sensors; }
 .panel:has(#diameter-title) { grid-area: diameter; }
-.stage-art svg { width: 64px; height: 80px; fill: #edf2ed; stroke: #708e7a; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; background: #fff; }
-.stage-enabled .stage-art svg { stroke: #175c49; fill: #dcece1; }
 .stage-state { display: inline-block; margin-top: 12px; padding: 3px 6px; border-radius: 4px; font-size: 9px; color: #65736d; background: #f3f6f3; }
 .stage-enabled .stage-state { background: #e2f0e6; color: #175c49; }
 .device-control { border-top: 1px solid #edf0ed; padding: 20px 0; }
@@ -123,16 +116,6 @@ input[type="range"] { width: 100%; accent-color: #225f4c; height: 5px; cursor: p
 .device-toggle.is-on .small-dot { background: #288265; }
 .device-control .control-field { margin: 20px 0 0; }
 .setting-hint { font-size: 10px; color: #65736d; margin-top: 9px; }
-@media (max-width: 550px) {
-  .process-track { grid-template-columns: 1fr; gap: 18px; margin: 20px 0; }
-  .process-track::before { width: 2px; height: auto; top: 30px; bottom: 40px; left: 31px; right: auto; }
-  .process-stage { display: grid; grid-template-columns: 64px 1fr auto; column-gap: 12px; text-align: left; align-items: start; }
-  .stage-art { grid-row: 1 / 4; height: 80px; margin: 0; }
-  .stage-number { grid-column: 2; }
-  .process-stage h3 { grid-column: 2; margin: 4px 0; }
-  .process-stage p { grid-column: 2; padding: 0; line-height: 1.6; }
-  .stage-state { grid-column: 3; grid-row: 1 / 4; margin-top: 25px; }
-}
 
 .simulation-controls { margin-bottom: 24px; padding: 18px; border: 1px solid #dce3e0; background: #fff; border-radius: 8px; }
 .simulation-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
@@ -143,7 +126,84 @@ input[type="range"] { width: 100%; accent-color: #225f4c; height: 5px; cursor: p
 .simulation-message { color: #52665a; font-size: 11px; line-height: 1.6; margin-top: 12px; }
 .sample-dot { fill: #3c876e; }
 .chart-empty { fill: #65736d; font-size: 12px; }
-.stage-enabled .stage-art { animation: operating-pulse 1.5s ease-in-out infinite alternate; }
-@keyframes operating-pulse { from { opacity: .65; } to { opacity: 1; } }
 @media (max-width: 550px) { .simulation-clock { width: 100%; margin: 4px 0 0; } }
-@media (prefers-reduced-motion: reduce) { .stage-enabled .stage-art { animation: none; } }
+
+/* SVG machine illustration: geometry is schematic, never a physical model. */
+.machine-canvas { overflow-x: auto; border: 1px solid #e5ece6; border-radius: 8px; background: #f8faf8; }
+.machine-canvas:focus-visible { outline: 3px solid #4979c7; outline-offset: 3px; }
+.machine-schematic { display: block; width: 100%; height: auto; }
+.process-baseline { stroke: #c8d6cc; stroke-width: 1; stroke-dasharray: 3 6; fill: none; }
+.machine-part { fill: #edf2ed; stroke: #7b9585; stroke-width: 1.7; stroke-linejoin: round; stroke-linecap: round; }
+.machine-part path { fill: none; }
+.machine-outline { fill: none; stroke: #9aafa1; }
+.material-stick { fill: #c9dccb; stroke: #71957a; }
+.stick-markings { stroke: #90b298; stroke-width: 8; stroke-dasharray: 1 11; }
+.rotating-part { transform-box: view-box; transform-origin: 0px 0px; }
+.machine-part .nozzle { fill: #dce5d8; stroke: #8a9d83; }
+.machine-part .heater-trace { stroke: #b38c62; opacity: .7; }
+.temperature-sensor { fill: #fff; }
+.machine-label, .machine-value { fill: #607367; stroke: none; font-family: inherit; font-size: 12px; }
+.machine-value { fill: #315e47; font-size: 16px; font-weight: 650; }
+.heat-meter-track { fill: #e2e9e2; stroke: none; }
+.heat-meter { stroke: none; }
+.hot-end-body, .heat-meter { transition: fill .45s linear, width .45s linear; }
+.fan-ring { fill: #f6f9f6; stroke: #a7bbad; }
+.fan-rotor path { fill: #c1d5c8; }
+.air-stream { fill: none; stroke: #a8c7c5; stroke-width: 2; opacity: .2; }
+.air-stream-active { opacity: 1; }
+.extruded-fiber { fill: none; stroke: #69a08a; stroke-linecap: round; transition: stroke-width .45s linear; }
+.fiber-flow { fill: none; stroke: #d8eddf; stroke-dasharray: 6 18; stroke-linecap: round; }
+.machine-part .camera-field { stroke: #afc8b8; stroke-dasharray: 3 4; fill: #e8f0e8; opacity: .4; }
+.machine-part .camera-field.is-sampling { opacity: .85; }
+.measurement-guide { stroke: #86b19e; stroke-dasharray: 2 4; }
+.camera-led { fill: #b8c6bc; stroke: none; }
+.active-led { fill: #2b9270; }
+.spool-winding { fill: #d9e7d7; }
+.spool-spokes { stroke: #89a58b; }
+.process-track { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; list-style: none; padding: 0; margin: 16px 0 12px; }
+.process-stage { min-width: 0; }
+.stage-inspect { display: flex; flex-direction: column; align-items: center; width: 100%; height: 100%; padding: 12px 5px; border: 1px solid transparent; border-radius: 7px; background: transparent; color: inherit; }
+.stage-inspect:hover { background: #f5f8f5; }
+.stage-inspect[aria-pressed="true"] { border-color: #cadbce; background: #f0f6f1; }
+.stage-name { font-size: 11px; font-weight: 600; margin-top: 6px; }
+.stage-inspect .stage-state { margin-top: 8px; }
+.stage-description { min-height: 48px; font-size: 11px; line-height: 1.7; color: #65736d; padding: 4px 2px 14px; }
+.stage-description strong { font-weight: 600; color: #42604b; }
+.stage-description > span { white-space: nowrap; }
+.camera-observation { border-top: 1px solid #edf0ed; padding-top: 20px; margin-bottom: 22px; }
+.camera-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.camera-heading .eyebrow { font-size: 8px; letter-spacing: 1px; margin-bottom: 6px; }
+.camera-heading h3 { margin: 0; font-size: 14px; }
+.camera-frame { display: block; width: 100%; background: #f3f7f3; border: 1px solid #e1e9e2; border-radius: 7px; }
+.camera-crosshair { fill: none; stroke: #c9d8cc; stroke-dasharray: 3 5; stroke-width: .7; }
+.observed-fiber { fill: #aacdbb; }
+.detected-edge { stroke: #34795d; stroke-width: 1.3; stroke-dasharray: 4 3; fill: none; }
+.camera-dimension { stroke: #34795d; stroke-width: 1; fill: none; }
+.camera-scan { stroke: #6d9d8f; stroke-width: 1; stroke-dasharray: 2 3; }
+.camera-overlay-label { fill: #708477; font-size: 9px; font-family: inherit; letter-spacing: .7px; }
+.camera-readout { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; }
+.camera-readout > span { display: flex; align-items: center; gap: 7px; font-size: 10px; color: #65736d; }
+.edge-legend { display: inline-block; width: 13px; border-top: 1px dashed #34795d; }
+.camera-readout strong { font-size: 20px; font-weight: 600; letter-spacing: -.5px; white-space: nowrap; }
+.camera-readout strong span { font-size: 11px; color: #65736d; font-weight: 400; }
+.process-visualization:not([data-status="running"]) .hot-end-body,
+.process-visualization:not([data-status="running"]) .heat-meter,
+.process-visualization:not([data-status="running"]) .extruded-fiber,
+.process-visualization:not([data-status="running"]) .observed-fiber { transition: none; }
+@media (max-width: 550px) {
+  .machine-schematic { min-width: 640px; }
+  .process-track { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .stage-inspect { padding: 9px 4px; }
+  .camera-heading { align-items: flex-start; }
+  .camera-heading .tag { font-size: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hot-end-body, .heat-meter, .extruded-fiber, .observed-fiber { transition: none; }
+}
+.schematic-hint { display: none; }
+.machine-schematic[data-selected="feed"] [data-part="feeder"],
+.machine-schematic[data-selected="hot-end"] [data-part="hot-end"],
+.machine-schematic[data-selected="cooling"] [data-part="fan"],
+.machine-schematic[data-selected="measurement"] [data-part="camera"],
+.machine-schematic[data-selected="collection"] [data-part="spool"] { stroke: #397d60; stroke-width: 2.2; }
+@media (max-width: 550px) { .schematic-hint { display: block; margin-top: 8px; font-size: 10px; color: #65736d; } }
