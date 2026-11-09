@@ -1,13 +1,10 @@
-// Fixed demonstration values only. No physical model or live sensor connection.
+// Fixed illustrative values, unrelated to control settings. No physical model.
 export const sensorReadings = [
-  { label: 'Barrel temperature', value: '185', unit: '°C', detail: 'Heating zone 01' },
-  { label: 'Extrusion pressure', value: '42.6', unit: 'bar', detail: 'Die inlet' },
-  { label: 'Take-up speed', value: '12.0', unit: 'm/min', detail: 'Winding station' },
+  { label: 'Hot-end temperature', value: '185', unit: '°C', detail: 'Simulated temperature sensor' },
+  { label: 'Camera fiber diameter', value: '1.75', unit: 'mm', detail: 'Simulated camera observation' },
 ]
 
 export const diameterSamples = [
   1.75, 1.76, 1.74, 1.75, 1.77, 1.76, 1.75, 1.73,
   1.74, 1.75, 1.76, 1.75, 1.74, 1.76, 1.75, 1.75,
 ]
-
-export const defaultSettings = { temperature: 185, screwSpeed: 30 }

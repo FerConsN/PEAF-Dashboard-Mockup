@@ -1,19 +1,13 @@
-import { useState } from 'react'
 import fiberMark from './assets/fiber-mark.svg'
 import ProcessVisualization from './components/ProcessVisualization.jsx'
 import MachineControls from './components/MachineControls.jsx'
 import SensorReadings from './components/SensorReadings.jsx'
 import DiameterMonitor from './components/DiameterMonitor.jsx'
-import { defaultSettings } from './simulation/placeholderData.js'
+import useMachineControls from './simulation/useMachineControls.js'
 
 export default function App() {
-  const [running, setRunning] = useState(false)
-  const [settings, setSettings] = useState({ ...defaultSettings })
-
-  function resetDemo() {
-    setRunning(false)
-    setSettings({ ...defaultSettings })
-  }
+  const { settings, changeSetting, resetControls } = useMachineControls()
+  const anyDeviceOn = settings.extruderOn || settings.heaterOn || settings.fanOn || settings.spoolOn
 
   return (
     <>
@@ -24,17 +18,17 @@ export default function App() {
       </header>
       <main id="main" className="dashboard">
         <div className="page-heading">
-          <div><p className="eyebrow">Fiber extrusion · Dashboard</p><h1>A closer look at the process.</h1><p className="page-description">Your workspace for exploring fiber production, one stage at a time.</p></div>
-          <div className={`status-pill ${running ? 'active' : ''}`} role="status"><span className="small-dot" />{running ? 'Demo running' : 'Demo paused'}</div>
+          <div><p className="eyebrow">AlFrEDo · Fiber extrusion</p><h1>From solid stick to fiber.</h1><p className="page-description">Explore the AlFrEDo system, based on MIT FrED, one stage at a time.</p></div>
+          <div className={`status-pill ${anyDeviceOn ? 'active' : ''}`} role="status"><span className="small-dot" />{anyDeviceOn ? 'Demo controls active' : 'All demo devices OFF'}</div>
         </div>
-        <div className="demo-banner"><span className="demo-label">PROTOTYPE</span><p>A starting point for the PEAF dashboard. All readings are illustrative.</p><span className="version-label">v0.1</span></div>
+        <div className="demo-banner"><span className="demo-label">PROTOTYPE</span><p>AlFrEDo interface prototype. All readings are simulated, with no hardware connection.</p><span className="version-label">v0.2</span></div>
         <div className="dashboard-grid">
-          <ProcessVisualization running={running} />
-          <MachineControls running={running} settings={settings} onSettingChange={(key, value) => setSettings((current) => ({ ...current, [key]: value }))} onToggle={() => setRunning((current) => !current)} onReset={resetDemo} />
+          <ProcessVisualization settings={settings} />
+          <MachineControls settings={settings} onSettingChange={changeSetting} onReset={resetControls} />
           <SensorReadings />
           <DiameterMonitor />
         </div>
-        <footer className="app-footer"><span>PEAF · Fiber extrusion workspace</span><span>Local demo / No machine connection</span></footer>
+        <footer className="app-footer"><span>PEAF · AlFrEDo workspace</span><span>Local demo / No machine connection</span></footer>
       </main>
     </>
   )
