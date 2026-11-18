@@ -1,14 +1,12 @@
 import { useId } from 'react'
 import Panel from './Panel.jsx'
+import { MAX_SAMPLES, TICK_MS } from '../simulation/engine.js'
 
 const center = 250
 const pixelsPerMm = 30
 const scanRows = [19, 35, 51, 67, 83, 99, 115, 131]
-const fiberProfile = Array.from({ length: 56 }, (_, index) => ({
-  y: 13 + index * 2.25,
-  factor: 1 + 0.025 * Math.sin(index * 0.35) + 0.012 * Math.sin(index * 0.91),
-  opacity: 0.72 + 0.22 * Math.cos(index * 0.65),
-}))
+const latestRow = 137
+const rowSpacing = (latestRow - 12) / (MAX_SAMPLES - 1)
 
 export default function DiameterMonitor({ diameter, samples, extruding }) {
   const gridId = useId()
@@ -16,15 +14,16 @@ export default function DiameterMonitor({ diameter, samples, extruding }) {
   const left = center - nominalWidth / 2
   const right = center + nominalWidth / 2
   const reading = diameter.toFixed(2)
-  const frameStatus = samples.length === 0 ? 'Initial preview' : extruding ? 'Sampling' : 'Held frame'
+  const hasSamples = samples.length > 0
+  const frameStatus = !hasSamples ? 'Awaiting samples' : extruding ? 'Sampling' : 'History held'
 
   return (
-    <Panel id="diameter-title" eyebrow="Simulated camera observation" title="Fiber diameter" badge={frameStatus}>
+    <Panel id="diameter-title" eyebrow="Simulated diameter history" title="Fiber diameter" badge={frameStatus}>
       <div className="diameter-summary">
         <div className="diameter-value">{reading} <span>mm</span></div>
         <p>Simulated diameter</p>
       </div>
-      <svg className="camera-frame diameter-observation" viewBox="0 0 500 170" role="img" aria-label={`${frameStatus}. Simulated fiber diameter ${reading} millimeters. The bracket marks the diameter at a fixed display scale.`}>
+      <svg className="camera-frame diameter-observation" viewBox="0 0 500 170" role="img" aria-label={`${frameStatus}. Simulated fiber diameter ${reading} millimeters. ${samples.length} recorded samples, newest at the bottom.`}>
         <defs>
           <pattern id={gridId} width="20" height="20" patternUnits="userSpaceOnUse">
             <path className="diameter-grid" d="M20 0H0V20" />
@@ -35,19 +34,23 @@ export default function DiameterMonitor({ diameter, samples, extruding }) {
         {scanRows.map((y) => (
           <path key={y} className="diameter-scan-tick" d={`M164 ${y}h6M330 ${y}h6`} />
         ))}
-        {fiberProfile.map(({ y, factor, opacity }) => {
-          const segmentWidth = nominalWidth * factor
+        {samples.map((sample, index) => {
+          const halfWidth = sample.diameter * pixelsPerMm / 2
+          const y = latestRow - (samples.length - 1 - index) * rowSpacing
           return (
-            <line key={y} className="diameter-fiber-stroke"
-              x1={center - segmentWidth / 2} x2={center + segmentWidth / 2}
-              y1={y} y2={y} opacity={opacity}
+            <line key={sample.time} className="diameter-fiber-stroke"
+              x1={center - halfWidth} x2={center + halfWidth}
+              y1={y} y2={y}
             />
           )
         })}
-        <path className="diameter-measurement" d={`M${left} 145v9H${right}v-9`} />
+        {hasSamples && <path className="diameter-measurement" d={`M${left} 145v9H${right}v-9`} />}
         <text className="camera-overlay-label" x="18" y="25">SIMULATED</text>
+        {hasSamples && <text className="camera-overlay-label" x="350" y={latestRow + 3}>NEWEST SAMPLE</text>}
       </svg>
-      <p className="help-text">The bracket marks the simulated diameter at a fixed display scale.</p>
+      <p className="help-text">{hasSamples
+        ? `One line per simulated reading (${TICK_MS / 1000} s during extrusion). The bracket marks the latest diameter.`
+        : 'Start simulated extrusion to record diameter readings.'}</p>
     </Panel>
   )
 }
