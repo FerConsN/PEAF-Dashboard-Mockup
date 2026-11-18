@@ -1,32 +1,54 @@
+import { useId } from 'react'
 import Panel from './Panel.jsx'
-import { INITIAL_DIAMETER, MAX_SAMPLES } from '../simulation/engine.js'
+
+const center = 250
+const fiberProfile = [
+  { y: 12, scale: 0.98 },
+  { y: 45, scale: 1.04 },
+  { y: 85, scale: 1 },
+  { y: 125, scale: 0.96 },
+  { y: 158, scale: 1.02 },
+]
 
 export default function DiameterMonitor({ diameter, samples, extruding }) {
-  const values = [INITIAL_DIAMETER, ...samples.map((sample) => sample.diameter)]
-  const lower = Math.max(0, Math.floor((Math.min(...values) - 0.1) * 10) / 10)
-  const upper = Math.ceil((Math.max(...values) + 0.1) * 10) / 10
-  const y = (value) => 135 - (value - lower) / (upper - lower) * 100
-  const first = samples[0]?.time ?? 0
-  const last = samples.at(-1)?.time ?? 0
-  const x = (time) => 55 + (time - first) / Math.max(last - first, 0.5) * 420
-  const points = samples.map((sample) => `${x(sample.time)},${y(sample.diameter)}`).join(' ')
-  const ticks = [upper, (upper + lower) / 2, lower]
+  const gridId = useId()
+  const halfWidth = diameter * 12
+  const reading = diameter.toFixed(2)
+  const frameStatus = samples.length === 0 ? 'Initial preview' : extruding ? 'Sampling' : 'Held frame'
+  const edges = fiberProfile.map(({ y, scale }) => ({
+    y,
+    left: center - halfWidth * scale,
+    right: center + halfWidth * scale,
+  }))
+  const outline = [
+    ...edges.map(({ left, y }) => `${left},${y}`),
+    ...edges.toReversed().map(({ right, y }) => `${right},${y}`),
+  ].join(' ')
 
   return (
-    <Panel id="diameter-title" eyebrow="Simulated camera observation" title="Fiber diameter" badge="Simulated trace">
-      <div className="diameter-summary"><div className="diameter-value">{diameter.toFixed(2)} <span>mm</span></div><p>Illustrative initial value<strong>1.75 mm · not a target</strong></p></div>
-      <svg className="diameter-chart" viewBox="0 0 500 170" role="img" aria-labelledby="chart-title chart-description">
-        <title id="chart-title">Simulated fiber diameter over simulation time</title>
-        <desc id="chart-description">{samples.length} of up to {MAX_SAMPLES} generated samples. Horizontal axis: simulation seconds. Vertical axis: simulated diameter in millimeters. The dashed line is an illustrative initial value, not an AlFrEDo target.</desc>
-        {ticks.map((value) => <g key={value}><line className="chart-grid" x1="55" y1={y(value)} x2="475" y2={y(value)} /><text className="chart-labels" x="0" y={y(value) + 4}>{value.toFixed(2)}</text></g>)}
-        <g className="chart-labels"><text x="55" y="164">{first.toFixed(1)} s</text><text x="425" y="164">{last.toFixed(1)} s</text></g>
-        <line className="nominal-line" x1="55" y1={y(INITIAL_DIAMETER)} x2="475" y2={y(INITIAL_DIAMETER)} />
-        {samples.length > 0 && <polyline className="diameter-line" points={points} />}
-        {samples.length === 1 && <circle className="sample-dot" cx="55" cy={y(samples[0].diameter)} r="3" />}
-        {samples.length === 0 && <text className="chart-empty" x="265" y="65" textAnchor="middle">Waiting for simulated extrusion</text>}
+    <Panel id="diameter-title" eyebrow="Simulated camera observation" title="Fiber diameter" badge={frameStatus}>
+      <div className="diameter-summary">
+        <div className="diameter-value">{reading} <span>mm</span></div>
+        <p>Simulated diameter</p>
+      </div>
+      <svg className="camera-frame diameter-observation" viewBox="0 0 500 170" role="img" aria-label={`${frameStatus}. Simulated fiber diameter ${reading} millimeters. Three scan lines span the fiber. Width is exaggerated.`}>
+        <defs>
+          <pattern id={gridId} width="20" height="20" patternUnits="userSpaceOnUse">
+            <path className="diameter-grid" d="M20 0H0V20" />
+          </pattern>
+        </defs>
+        <rect width="500" height="170" fill={`url(#${gridId})`} />
+        <path className="camera-crosshair" d="M250 0V170" />
+        <polygon className="diameter-fiber" points={outline} />
+        {edges.slice(1, -1).map(({ y, left, right }) => (
+          <g key={y}>
+            <path className="camera-scan" d={`M155 ${y}H${left}M${right} ${y}H345`} />
+            <path className="camera-dimension" d={`M${left} ${y}H${right}M${left} ${y - 5}v10M${right} ${y - 5}v10`} />
+          </g>
+        ))}
+        <text className="camera-overlay-label" x="18" y="25">SIMULATED</text>
       </svg>
-      <p className="help-text">{samples.length} / {MAX_SAMPLES} samples · {extruding ? 'Sampling every 0.5 s' : samples.length ? 'Trace held until extrusion resumes' : 'No generated samples yet'}. Artificial values only.</p>
-      <div className="chart-legend"><span><i />Simulated diameter</span><span><i className="legend-nominal" />Illustrative initial value</span></div>
+      <p className="help-text">Scan lines mark the simulated fiber edges. Display width is exaggerated.</p>
     </Panel>
   )
 }
