@@ -70,9 +70,8 @@ input[type="range"] { width: 100%; accent-color: #225f4c; height: 5px; cursor: p
 .diameter-grid { fill: none; stroke: #e2eae4; stroke-width: .5; }
 .diameter-center-guide { stroke: #c9d8cc; stroke-opacity: .7; stroke-width: .55; }
 .diameter-fiber-stroke { stroke: #52665a; stroke-width: .9; }
-.diameter-fiber-stroke.is-alternate { stroke: #708477; }
-.diameter-fiber-stroke.is-accent { stroke: #6d9d8f; }
-.diameter-measurement { stroke: #34795d; stroke-opacity: .82; stroke-width: .9; }
+.diameter-scan-tick { stroke: #708477; stroke-opacity: .38; stroke-width: .7; }
+.diameter-measurement { fill: none; stroke: #34795d; stroke-width: 1; }
 .app-footer { display: flex; justify-content: space-between; gap: 16px; font-size: 10px; color: #65736d; padding-top: 26px; }
 .skip-link { position: absolute; left: 10px; top: -100px; padding: 12px; background: white; z-index: 2; }
 .skip-link:focus { top: 10px; }
