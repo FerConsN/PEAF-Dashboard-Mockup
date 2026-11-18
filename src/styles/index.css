@@ -68,7 +68,11 @@ input[type="range"] { width: 100%; accent-color: #225f4c; height: 5px; cursor: p
 .diameter-summary p { font-size: 10px; color: #65736d; text-align: right; }
 .diameter-observation { margin-top: 18px; }
 .diameter-grid { fill: none; stroke: #e2eae4; stroke-width: .5; }
-.diameter-fiber { fill: #b3d0bd; stroke: #68977f; stroke-width: 1; }
+.diameter-center-guide { stroke: #7d9699; stroke-opacity: .24; stroke-width: .55; }
+.diameter-fiber-stroke { stroke: #575b59; stroke-width: .9; }
+.diameter-fiber-stroke.is-warm { stroke: #8d7161; }
+.diameter-fiber-stroke.is-accent { stroke: #548f9a; }
+.diameter-measurement { stroke: #429aaa; stroke-opacity: .72; stroke-width: .9; }
 .app-footer { display: flex; justify-content: space-between; gap: 16px; font-size: 10px; color: #65736d; padding-top: 26px; }
 .skip-link { position: absolute; left: 10px; top: -100px; padding: 12px; background: white; z-index: 2; }
 .skip-link:focus { top: 10px; }
