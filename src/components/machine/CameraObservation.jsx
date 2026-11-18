@@ -28,7 +28,7 @@ export default function CameraObservation({ state, process, visual }) {
         <text className="camera-overlay-label" x="18" y="146">Edges illustrated from engine diameter</text>
       </svg>
       <div className="camera-readout"><span><i className="edge-legend" />Detected edges · simulated</span><strong>{state.diameter.toFixed(2)} <span>mm</span></strong></div>
-      <p className="help-text">{visual.hasFiber ? 'Uses the same generated diameter as the graph and sensors.' : '1.75 mm is an illustrative initial value, not an AlFrEDo target.'} Thickness is exaggerated. No images are captured or analyzed.</p>
+      <p className="help-text">{visual.hasFiber ? 'Uses the same generated diameter as the Fiber diameter panel and sensors.' : '1.75 mm is an illustrative initial value, not an AlFrEDo target.'} Thickness is exaggerated. No images are captured or analyzed.</p>
     </section>
   )
 }
